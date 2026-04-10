@@ -807,10 +807,13 @@
       padding: 14px 16px;
       text-decoration: none;
       color: inherit;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: rgba(0,87,231,0.12);
       transition: border-color 0.15s, box-shadow 0.15s, transform 0.12s;
     }
     .qz-app-card:hover { border-color: var(--primary); box-shadow: 0 4px 18px rgba(0,87,231,0.1); }
-    .qz-app-card:active { transform: scale(0.97); }
+    .qz-app-card:active { transform: scale(0.97); border-color: var(--primary); }
     .qz-app-icon {
       width: 52px; height: 52px;
       border-radius: 15px;
@@ -1467,8 +1470,14 @@
       const url = a.pkg
         ? `https://play.google.com/store/apps/details?id=${a.pkg}&hl=zh_TW`
         : `https://play.google.com/store/apps/developer?id=${a.dev}&hl=zh_TW`;
+      // Use both href and onclick for maximum cross-browser/mobile compatibility
+      const androidUrl = a.pkg ? `market://details?id=${a.pkg}` : null;
+      const onclickFn = androidUrl
+        ? `qzOpenApp('${url}','${androidUrl}')`
+        : `window.open('${url}','_blank')`;
       return `
-        <a class="qz-app-card" href="${url}" target="_blank" rel="noopener">
+        <a class="qz-app-card" href="${url}" target="_blank" rel="noopener"
+           onclick="event.preventDefault();${onclickFn};">
           <div class="qz-app-icon" style="background:${a.bg}">${a.emoji}</div>
           <div class="qz-app-info">
             <div class="qz-app-name">${a.name}</div>
@@ -1501,6 +1510,17 @@
       </div>`;
     document.getElementById('qzBody').innerHTML = html;
     document.getElementById('qzBody').scrollTop = 0;
+  }
+
+  // Open Play Store — with Android market:// fallback
+  function qzOpenApp(webUrl, androidUrl) {
+    if (androidUrl && /Android/i.test(navigator.userAgent)) {
+      const t = setTimeout(() => { window.open(webUrl, '_blank'); }, 1200);
+      window.location.href = androidUrl;
+      window.addEventListener('blur', () => clearTimeout(t), { once: true });
+    } else {
+      window.open(webUrl, '_blank');
+    }
   }
 
   // bind buttons
