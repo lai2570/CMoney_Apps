@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CMoney Google Play 應用程式</title>
+  <style>
+    :root {
+      --primary: #0057e7;
+      --primary-dark: #003fad;
+      --accent: #00c896;
+      --bg: #f0f4f8;
+      --card-bg: #ffffff;
+      --text: #1a1a2e;
+      --sub: #5a6580;
+      --border: #e0e8f0;
+      --shadow: 0 4px 20px rgba(0, 87, 231, 0.08);
+      --shadow-hover: 0 8px 32px rgba(0, 87, 231, 0.18);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang TC', 'Noto Sans TC',
+                   'Microsoft JhengHei', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      min-height: 100dvh; /* iOS Safari fix */
+      /* safe area for notch / gesture bar */
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, #1a8cff 100%);
+      padding: 28px 40px 22px;
+      padding-top: max(28px, env(safe-area-inset-top));
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      right: -60px; bottom: -60px;
+      width: 260px; height: 260px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      right: 80px; top: -80px;
+      width: 200px; height: 200px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+    }
+
+    .logo-circle {
+      width: 64px; height: 64px;
+      background: #fff;
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      flex-shrink: 0;
+      z-index: 1;
+    }
+
+    .header-text { z-index: 1; }
+    .header-text h1 {
+      color: #fff;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .header-text p {
+      color: rgba(255,255,255,0.75);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .header-btn {
+      margin-left: auto;
+      z-index: 1;
+      background: rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.4);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+      backdrop-filter: blur(4px);
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+    .header-btn:hover {
+      background: rgba(255,255,255,0.28);
+      transform: translateY(-1px);
+    }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 40px 0;
+      flex-wrap: wrap;
+    }
+
+    .filter-label {
+      font-size: 13px;
+      color: var(--sub);
+      font-weight: 600;
+      margin-right: 4px;
+    }
+
+    .filter-btn {
+      padding: 7px 18px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      color: var(--sub);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.18s;
+      font-weight: 500;
+    }
+    .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .filter-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    /* ── MAIN CONTENT ── */
+    main { padding: 24px 40px 60px; }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--sub);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title span {
+      background: var(--primary);
+      color: #fff;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      letter-spacing: 0;
+      text-transform: none;
+      font-weight: 600;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── APP CARD ── */
+    .card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      border: 1.5px solid var(--border);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--primary);
+    }
+    /* touch active feedback */
+    .card:active {
+      transform: scale(0.97);
+      box-shadow: var(--shadow);
+      border-color: var(--primary);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .app-icon {
+      width: 60px; height: 60px;
+      border-radius: 16px;
+      font-size: 30px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .app-info { flex: 1; min-width: 0; }
+    .app-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .app-dev {
+      font-size: 12px;
+      color: var(--primary);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      margin-top: 5px;
+    }
+    .badge-stock  { background: #e8f0fe; color: #1a56db; }
+    .badge-finance{ background: #e6fbf5; color: #059669; }
+    .badge-social { background: #fdf2fb; color: #a21caf; }
+    .badge-edu    { background: #fff7ed; color: #c2410c; }
+    .badge-invest { background: #f0fdf4; color: #15803d; }
+
+    .app-desc {
+      font-size: 13px;
+      color: var(--sub);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: #f59e0b;
+      font-weight: 600;
+    }
+    .rating-count { color: var(--sub); font-weight: 400; font-size: 12px; }
+
+    .play-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--primary), #1a8cff);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .play-btn:hover { opacity: 0.88; transform: scale(1.04); }
+    .play-btn:active { opacity: 0.7; transform: scale(0.96); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #fff;
+      border-top: 1px solid var(--border);
+      padding: 24px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    footer p { font-size: 13px; color: var(--sub); }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-links a {
+      font-size: 13px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .footer-links a:hover { text-decoration: underline; }
+
+    /* ── HIDDEN CLASS ── */
+    .card.hidden { display: none; }
+
+    /* ══════════════════════════════════════
+       WELCOME OVERLAY
+    ══════════════════════════════════════ */
+    #welcome-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: linear-gradient(150deg, #001f6b 0%, #0057e7 45%, #00b8a9 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 24px;
+      padding-top: max(24px, env(safe-area-inset-top));
+      padding-bottom: max(24px, env(safe-area-inset-bottom));
+      overflow-y: auto;
+      /* iOS Safari: prevent scroll bounce from hiding content */
+      -webkit-overflow-scrolling: touch;
+      min-height: 100vh;
+      min-height: 100dvh;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    #welcome-overlay.fade-out {
+      opacity: 0;
+      transform: scale(1.04);
+      pointer-events: none;
+    }
+
+    /* floating blobs — reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+      .blob, .wl-logo, .wl-headline, .wl-divider, .wl-pillars,
+      .wl-mission, .wl-enter-btn, .wl-skip { animation: none !important; opacity: 1 !important; }
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      animation: blobFloat 6s ease-in-out infinite alternate;
+    }
+    .blob-1 { width: 340px; height: 340px; top: -100px; right: -80px; animation-delay: 0s; }
+    .blob-2 { width: 220px; height: 220px; bottom: -60px; left: -40px; animation-delay: 1.5s; }
+    .blob-3 { width: 160px; height: 160px; bottom: 120px; right: 60px; animation-delay: 3s; }
+    @keyframes blobFloat {
+      from { transform: translateY(0) scale(1); }
+      to   { transform: translateY(-24px) scale(1.06); }
+    }
+
+    /* logo */
+    .wl-logo {
+      width: 68px; height: 68px;
+      background: rgba(60,100,200,0.55); /* backdrop-filter fallback */
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+      margin-bottom: 16px;
+      z-index: 1;
+      animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    /* headline */
+    .wl-headline {
+      z-index: 1;
+      text-align: center;
+      animation: slideUp 0.5s 0.15s ease both;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    .wl-headline h1 {
+      font-size: clamp(28px, 6vw, 48px);
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+    .wl-headline h1 em {
+      font-style: normal;
+      background: linear-gradient(90deg, #7efff5, #a8edea);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+    .wl-headline .tagline {
+      margin-top: 12px;
+      font-size: clamp(14px, 2.5vw, 18px);
+      color: rgba(255,255,255,0.82);
+      line-height: 1.6;
+      max-width: 520px;
+    }
+
+    /* divider */
+    .wl-divider {
+      width: 48px; height: 3px;
+      background: rgba(255,255,255,0.35);
+      border-radius: 2px;
+      margin: 16px auto;
+      z-index: 1;
+      animation: slideUp 0.5s 0.25s ease both;
+    }
+
+    /* life pillars */
+    .wl-pillars {
+      display: flex;
+      gap: 10px;
+      flex-wrap: nowrap;
+      justify-content: center;
+      z-index: 1;
+      width: 100%;
+      max-width: 680px;
+      animation: slideUp 0.5s 0.3s ease both;
+    }
+    .pillar {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(6px);
+      border: 1.5px solid rgba(255,255,255,0.22);
+      border-radius: 50px;
+      padding: 9px 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: default;
+      white-space: nowrap;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .pillar:hover {
+      background: rgba(255,255,255,0.22);
+      transform: translateY(-3px);
+    }
+    .pillar-icon { font-size: 18px; }
+
+    /* mission */
+    .wl-mission {
+      z-index: 1;
+      margin-top: 16px;
+      background: rgba(30,70,180,0.45); /* fallback for no backdrop-filter */
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 16px;
+      padding: 14px 24px;
+      max-width: 540px;
+      text-align: center;
+      animation: slideUp 0.5s 0.4s ease both;
+    }
+    .wl-mission p {
+      color: rgba(255,255,255,0.9);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+    .wl-mission strong { color: #7efff5; }
+
+    /* enter button */
+    .wl-enter-btn {
+      z-index: 1;
+      margin-top: 20px;
+      background: #fff;
+      color: var(--primary);
+      border: none;
+      padding: 16px 48px;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      transition: transform 0.18s, box-shadow 0.18s;
+      animation: slideUp 0.5s 0.5s ease both;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .wl-enter-btn:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.3);
+    }
+    .wl-enter-btn:active { transform: scale(0.96); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .wl-enter-btn .arrow {
+      font-size: 20px;
+      transition: transform 0.18s;
+    }
+    .wl-enter-btn:hover .arrow { transform: translateX(4px); }
+
+    /* skip hint */
+    .wl-skip {
+      z-index: 1;
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+      animation: slideUp 0.5s 0.6s ease both;
+    }
+
+    /* ══════════════════════════════════════
+       QUIZ CTA SECTION
+    ══════════════════════════════════════ */
+    .quiz-cta {
+      background: linear-gradient(135deg, #fffbeb 0%, #fff8e1 100%);
+      border-bottom: 1px solid #fde68a;
+      padding: 22px 40px;
+    }
+    .quiz-cta-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .quiz-cta-badge {
+      display: inline-block;
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      color: #92400e;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 12px;
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+    }
+    .quiz-cta-text h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #1a1a2e;
+      line-height: 1.2;
+    }
+    .quiz-cta-text p { font-size: 13px; color: #5a6580; margin-top: 4px; }
+    .quiz-cta-btn {
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+      color: #fff;
+      border: none;
+      padding: 18px 38px;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 6px 28px rgba(249,115,22,0.38);
+      transition: transform 0.18s, box-shadow 0.18s;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .quiz-cta-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 12px 36px rgba(249,115,22,0.45); }
+    .quiz-cta-btn:active { transform: scale(0.97); }
+    .quiz-cta-btn .btn-arrow { font-size: 22px; transition: transform 0.18s; }
+    .quiz-cta-btn:hover .btn-arrow { transform: translateX(4px); }
+    @media (max-width: 600px) {
+      .quiz-cta { padding: 16px; }
+      .quiz-cta-inner { flex-direction: column; align-items: flex-start; }
+      .quiz-cta-btn { width: 100%; justify-content: center; font-size: 16px; padding: 16px; }
+    }
+
+    /* ══════════════════════════════════════
+       QUIZ OVERLAY
+    ══════════════════════════════════════ */
+    #quiz-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 8000;
+      background: #f8faff;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-height: 100vh;
+      min-height: 100dvh;
+      transition: opacity 0.28s ease;
+    }
+    #quiz-overlay.quiz-hidden { display: none; }
+    #quiz-overlay.quiz-fade-in { animation: quizSlideIn 0.32s ease both; }
+    @keyframes quizSlideIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* header */
+    .qz-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      padding-top: max(14px, env(safe-area-inset-top));
+      background: #fff;
+      border-bottom: 1px solid #e0e8f0;
+      position: sticky; top: 0; z-index: 2;
+    }
+    .qz-back-btn, .qz-close-btn {
+      background: none;
+      border: 1.5px solid #e0e8f0;
+      border-radius: 50px;
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #5a6580;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.15s;
+      min-height: 36px;
+    }
+    .qz-back-btn:disabled { opacity: 0.25; pointer-events: none; }
+    .qz-back-btn:hover, .qz-close-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .qz-close-btn { font-size: 16px; padding: 7px 12px; }
+    .qz-progress-wrap {
+      flex: 1;
+      height: 10px;
+      background: #e0e8f0;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .qz-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #58cc02, #89e219);
+      border-radius: 5px;
+      width: 0%;
+      transition: width 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .qz-step-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #5a6580;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* body */
+    .qz-body {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 36px 20px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* question */
+    .qz-q-wrap {
+      width: 100%;
+      max-width: 580px;
+    }
+    .qz-q-wrap.qz-animate { animation: quizSlideIn 0.32s ease both; }
+    .qz-q-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .qz-q-text {
+      font-size: clamp(20px, 4vw, 28px);
+      font-weight: 900;
+      color: #1a1a2e;
+      line-height: 1.3;
+      margin-bottom: 28px;
+    }
+    .qz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .qz-option {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #fff;
+      border: 2.5px solid #e0e8f0;
+      border-radius: 18px;
+      padding: 17px 18px;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      transition: border-color 0.15s, background 0.15s, transform 0.12s;
+      min-height: 72px;
+    }
+    .qz-option:hover { border-color: var(--primary); background: #f0f5ff; }
+    .qz-option:active { transform: scale(0.97); }
+    .qz-option.qz-selected {
+      border-color: #58cc02;
+      background: #f0fff0;
+    }
+    .qz-option.qz-disabled { opacity: 0.45; pointer-events: none; }
+    .qz-opt-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: #f0f4f8;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .qz-option.qz-selected .qz-opt-icon { background: #dcfce7; }
+    .qz-opt-body { flex: 1; min-width: 0; }
+    .qz-opt-label { font-size: 16px; font-weight: 700; color: #1a1a2e; line-height: 1.2; }
+    .qz-opt-sub { font-size: 13px; color: #5a6580; margin-top: 3px; line-height: 1.4; }
+    .qz-opt-check {
+      width: 26px; height: 26px;
+      border: 2px solid #d1d5db;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      transition: all 0.15s;
+    }
+    .qz-option.qz-selected .qz-opt-check { background: #58cc02; border-color: #58cc02; color: #fff; }
+
+    /* ── RESULT ── */
+    .qz-result {
+      width: 100%;
+      max-width: 580px;
+      animation: quizSlideIn 0.4s ease both;
+    }
+    .qz-result-top {
+      text-align: center;
+      padding-bottom: 24px;
+    }
+    .qz-result-icon {
+      width: 96px; height: 96px;
+      border-radius: 28px;
+      margin: 0 auto 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 52px;
+      animation: resultBounce 0.55s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes resultBounce {
+      from { transform: scale(0.2) rotate(-12deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg);    opacity: 1; }
+    }
+    .qz-result-sublabel {
+      font-size: 11px; font-weight: 800; color: #5a6580;
+      letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px;
+    }
+    .qz-result-name {
+      font-size: clamp(26px, 5.5vw, 38px);
+      font-weight: 900;
+      color: #1a1a2e;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .qz-community-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #eff6ff;
+      border: 1.5px solid #bfdbfe;
+      color: #1d4ed8;
+      padding: 7px 18px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      animation: slideUp 0.4s 0.2s ease both;
+    }
+    .qz-community-badge .pct { font-size: 18px; font-weight: 900; }
+    .qz-desc-card {
+      background: #fff;
+      border: 1.5px solid #e0e8f0;
+      border-radius: 20px;
+      padding: 20px 22px;
+      font-size: 15px;
+      color: #374151;
+      line-height: 1.8;
+      text-align: left;
+      margin: 20px 0;
+      animation: slideUp 0.4s 0.3s ease both;
+    }
+    .qz-apps-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+      animation: slideUp 0.4s 0.35s ease both;
+    }
+    .qz-app-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+      animation: slideUp 0.4s 0.4s ease both;
+    }
+    .qz-app-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #fff;
+      border: 1.5px solid #e0e8f0;
+      border-radius: 18px;
+      padding: 14px 16px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.12s;
+    }
+    .qz-app-card:hover { border-color: var(--primary); box-shadow: 0 4px 18px rgba(0,87,231,0.1); }
+    .qz-app-card:active { transform: scale(0.97); }
+    .qz-app-icon {
+      width: 52px; height: 52px;
+      border-radius: 15px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+    .qz-app-info { flex: 1; }
+    .qz-app-name { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+    .qz-app-cat { font-size: 12px; color: #5a6580; margin-top: 2px; }
+    .qz-app-badge {
+      background: linear-gradient(135deg, var(--primary), #1a8cff);
+      color: #fff;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .qz-more-note {
+      font-size: 12px; color: #5a6580; text-align: center;
+      margin-bottom: 20px;
+      animation: slideUp 0.4s 0.45s ease both;
+    }
+    .qz-result-actions {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      animation: slideUp 0.4s 0.5s ease both;
+      margin-bottom: 32px;
+    }
+    .qz-btn-retry {
+      flex: 1; min-width: 130px;
+      background: #fff;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      padding: 14px 18px;
+      border-radius: 50px;
+      font-size: 15px; font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+      min-height: 50px;
+    }
+    .qz-btn-retry:hover { background: #f0f5ff; }
+    .qz-btn-retry:active { transform: scale(0.97); }
+    .qz-btn-back {
+      flex: 1; min-width: 130px;
+      background: linear-gradient(135deg, var(--primary), #1a8cff);
+      border: none;
+      color: #fff;
+      padding: 14px 18px;
+      border-radius: 50px;
+      font-size: 15px; font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      min-height: 50px;
+    }
+    .qz-btn-back:hover { opacity: 0.88; }
+    .qz-btn-back:active { transform: scale(0.97); }
+
+    /* ── GOOGLE PLAY BADGE ── */
+    .gp-badge {
+      width: 22px; height: 22px;
+      background: #01875f;
+      border-radius: 5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+
+    /* responsive — mobile */
+    @media (max-width: 600px) {
+      header {
+        padding-left: 16px; padding-right: 16px;
+        padding-top: max(20px, env(safe-area-inset-top));
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .header-text h1 { font-size: 18px; }
+      .header-text p  { font-size: 12px; }
+      .logo-circle { width: 48px; height: 48px; font-size: 24px; }
+      .filter-bar, main { padding-left: 16px; padding-right: 16px; }
+      footer {
+        padding-left: 16px; padding-right: 16px;
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+      }
+      .grid { grid-template-columns: 1fr; }
+      .header-btn { display: none; }
+      .wl-pillars { gap: 6px; }
+      .pillar { padding: 7px 10px; font-size: 12px; gap: 4px; }
+      .pillar-icon { font-size: 15px; }
+      /* filter bar scrollable on tiny phones */
+      .filter-bar { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 12px; }
+      .filter-label { flex-shrink: 0; }
+      .filter-btn { flex-shrink: 0; }
+    }
+
+    /* touch: disable hover lift on touch devices */
+    @media (hover: none) {
+      .card:hover { transform: none; box-shadow: var(--shadow); border-color: var(--border); }
+      .play-btn:hover { opacity: 1; transform: none; }
+      .wl-enter-btn:hover { transform: none; box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ WELCOME OVERLAY ═══════════════════ -->
+<div id="welcome-overlay">
+  <!-- floating blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <!-- logo -->
+  <div class="wl-logo">💹</div>
+
+  <!-- headline -->
+  <div class="wl-headline">
+    <h1>人生投資，<em>從 CMoney 開始</em></h1>
+    <p class="tagline">我們不只是股市工具，更是你全方位的生活夥伴</p>
+  </div>
+
+  <div class="wl-divider"></div>
+
+  <!-- life pillars -->
+  <div class="wl-pillars">
+    <div class="pillar"><span class="pillar-icon">💰</span>財務</div>
+    <div class="pillar"><span class="pillar-icon">💪</span>健康</div>
+    <div class="pillar"><span class="pillar-icon">💼</span>工作</div>
+    <div class="pillar"><span class="pillar-icon">🤝</span>人際</div>
+    <div class="pillar"><span class="pillar-icon">🏠</span>家庭</div>
+  </div>
+
+  <!-- mission card -->
+  <div class="wl-mission">
+    <p>
+      CMoney 成立於台灣，致力於開發涵蓋<strong>股市分析、記帳理財、社群互動、語言學習</strong>等多元領域的應用程式。<br><br>
+      我們的使命很簡單——<strong>幫助每一個人做好人生投資，讓人人都能有美好人生！</strong>
+    </p>
+  </div>
+
+  <!-- enter button -->
+  <button class="wl-enter-btn" id="enterBtn">
+    探索所有 APP <span class="arrow">→</span>
+  </button>
+
+  <p class="wl-skip">點擊任意處也可進入</p>
+</div>
+
+<!-- ═══════════════════ HEADER ═══════════════════ -->
+<header>
+  <div class="logo-circle">💹</div>
+  <div class="header-text">
+    <h1>CMoney Google Play 應用程式</h1>
+    <p>CMoney Inc. 旗下所有上架 Google Play 的 APP，點擊直接前往商店頁面</p>
+  </div>
+  <a class="header-btn"
+     href="https://play.google.com/store/apps/developer?id=CMoney+Inc&hl=zh_TW"
+     target="_blank" rel="noopener">
+    <span class="gp-badge">▶</span> 查看開發者頁面
+  </a>
+</header>
+
+<!-- ═══════════════════ QUIZ CTA ═══════════════════ -->
+<div class="quiz-cta">
+  <div class="quiz-cta-inner">
+    <div class="quiz-cta-text">
+      <span class="quiz-cta-badge">✨ 只需 3 分鐘</span>
+      <h2>不知道從哪開始？讓我們幫你找出最適合的工具！</h2>
+      <p>回答幾個問題，立即獲得專屬的 CMoney APP 推薦</p>
+    </div>
+    <button class="quiz-cta-btn" id="quizCTABtn">
+      進行小測驗 <span class="btn-arrow">→</span>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════ FILTER BAR ═══════════════════ -->
+<div class="filter-bar">
+  <span class="filter-label">分類：</span>
+  <button class="filter-btn active" data-cat="all">全部</button>
+  <button class="filter-btn" data-cat="stock">股市分析</button>
+  <button class="filter-btn" data-cat="finance">投資理財</button>
+  <button class="filter-btn" data-cat="invest">模擬交易</button>
+  <button class="filter-btn" data-cat="social">社群</button>
+  <button class="filter-btn" data-cat="edu">學習</button>
+</div>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<main>
+  <div class="section-title">
+    應用程式列表 <span id="count">9 個 APP</span>
+  </div>
+
+  <div class="grid" id="appGrid">
+
+    <!-- 1 -->
+    <a class="card" data-cat="stock"
+       href="https://play.google.com/store/apps/details?id=com.cmoney.chipk&hl=zh_TW"
+       target="_blank" rel="noopener">
+      <div class="card-header">
+        <div class="app-icon" style="background:#e8f0fe;">📊</div>
+        <div class="app-info">
+          <div class="app-name">股市籌碼 K 線</div>
+          <div class="app-dev">CMoney Inc.</div>
+          <span class="badge badge-stock">股市分析</span>
+        </div>
+      </div>
+      <p class="app-desc">快速找出主力籌碼飆股，內含完整台股資訊與獨家選股分析功能，精準掌握法人、外資動向。</p>
+      <div class="card-footer">
+        <div class="rating">★★★★☆ <span class="rating-count">4.2</span></div>
+        <span class="play-btn"><span class="gp-badge" style="background:#fff;color:#01875f;">▶</span> Play 商店</span>
+      </div>
+    </a>
+
+    <!-- 2 -->
+    <a class="card" data-cat="stock"
+       href="https://play.google.com/store/apps/details?id=com.cmoney.supertrendk&hl=zh_TW"
+       target="_blank" rel="noopener">
+      <div class="card-header">
+        <div class="app-icon" style="background:#fff0f0;">🚀</div>
+        <div class="app-info">
+          <div class="app-name">股市起漲 K 線</div>
+          <div class="app-dev">CMoney Inc.</div>
+          <span class="badge badge-stock">股市分析</span>
+        </div>
+      </div>
+      <p class="app-desc">幫你找到強勢飆漲的瘋狗流股票，AI 自動監控全台股，即時通知起漲訊號，抓住爆發行情。</p>
+      <div class="card-footer">
+        <div class="rating">★★★★☆ <span class="rating-count">4.1</span></div>
+        <span class="play-btn"><span class="gp-badge" style="background:#fff;color:#01875f;">▶</span> Play 商店</span>
+      </div>
+    </a>
+
+    <!-- 3 -->
+    <a class="card" data-cat="finance"
+       href="https://play.google.com/store/apps/details?id=com.cmoney.valuek&hl=zh_TW"
+       target="_blank" rel="noopener">
+      <div class="card-header">
+        <div class="app-icon" style="background:#e6fbf5;">💰</div>
+        <div class="app-info">
+          <div class="app-name">存股價值 K 線</div>
+          <div class="app-dev">CMoney Inc.</div>
+          <span class="badge badge-finance">投資理財</span>
+        </div>
+      </div>
+      <p class="app-desc">以最短時間從基本面評估股票，精選存股標的，適合長期投資人快速篩選優質定存股。</p>
+      <div class="card-footer">
+        <div class="rating">★★★★☆ <span class="rating-count">4.0</span></div>
+        <span class="play-btn"><span class="gp-badge" style="background:#fff;color:#01875f;">▶</span> Play 商店</span>
+      </div>
+    </a>
+
+    <!-- 4 -->
+    <a class="card" data-cat="social"
+       href="https://play.google.com/store/apps/details?id=com.cmoney.forum&hl=zh_TW"
+       target="_blank" rel="noopener">
+      <div class="card-header">
+        <div class="app-icon" style="background:#fdf2fb;">💬</div>
+        <div class="app-info">
+          <div class="app-name">股市爆料同學會</div>
+          <div class="app-dev">CMoney Inc.</div>
+          <span class="badge badge-social">社群</span>
+        </div>
+      </div>
+      <p class="app-desc">全台最大股市社群！台股討論、即時股價、技術分析、法人趨勢一次看，與百萬股民交流。</p>
+      <div class="card-footer">
+        <div class="rating">★★★★☆ <span class="rating-count">4.3</span></div>
+        <span class="play-btn"><span class="gp-badge" style="background:#fff;color:#01875f;">▶</span> Play 商店</span>
+      </div>
+    </a>
+
+    <!-- 5 -->
+    <a class="card" data-cat="invest"
+       href="https://play.google.com/store/apps/details?id=com.cmoney.virtualtrade&hl=zh_TW"
+       target="_blank" rel="noopener">
+      <div class="card-header">
+        <div class="app-icon" style="background:#f0fdf4;">🎮</div>
+        <div class="app-info">
+          <div class="app-name">股市大富翁</div>
+          <div class="app-dev">CMoney Inc.</div>
+          <span class="badge badge-invest">模擬交易</span>
+        </div>
+      </div>
+      <p class="app-desc">台灣最大股票模擬交易平台，每週超過 10 萬人使用！無風險學習買賣股票，累積投資經驗。</p>
+      <div class="card-footer">
+        <div class="rating">★★★★☆ <span class="rating-count">4.2</span></div>
+        <span class="play-btn"><span class="gp-badge" style="background:#fff;color:#01875f;">▶</span> Play 商店</span>
+      </div>
+    </a>
+
+    <!-- 6 -->
+    <a class="card" data-cat="social"
+       href="https://play.google.com/store/apps/details?id=com.cmoney.showpop&hl=zh_TW"
+       target="_blank" rel="noopener">
+      <div class="card-header">
+        <div class="app-icon" style="background:#fff7ed;">📸</div>
+        <div class="app-info">
+          <div class="app-name">咻拍</div>
+          <div class="app-dev">CMoney Inc.</div>
+          <span class="badge badge-social">社群</span>
+        </div>
+      </div>
+      <p class="app-desc">情侶、朋友、閨蜜必備的社交 Widget APP，直接在手機桌面分享照片，保持最親密的連結。</p>
+      <div class="card-footer">
+        <div class="rating">★★★★☆ <span class="rating-count">3.9</span></div>
+        <span class="play-btn"><span class="gp-badge" style="background:#fff;color:#01875f;">▶</span> Play 商店</span>
+      </div>
+    </a>
+
+    <!-- 7 -->
+    <a class="card" data-cat="edu"
+       href="https://play.google.com/store/apps/details?id=com.cmoney.cindyenglish&hl=zh_TW"
+       target="_blank" rel="noopener">
+      <div class="card-header">
+        <div class="app-icon" style="background:#fff7ed;">📚</div>
+        <div class="app-info">
+          <div class="app-name">和 Cindy 一起學英文</div>
+          <div class="app-dev">CMoney Inc.</div>
+          <span class="badge badge-edu">學習</span>
+        </div>
+      </div>
+      <p class="app-desc">收錄 TOEIC 常用句型與測驗解析，跟著 Cindy 老師輕鬆學英文，有趣又實用的語言學習體驗。</p>
+      <div class="card-footer">
+        <div class="rating">★★★★☆ <span class="rating-count">4.0</span></div>
+        <span class="play-btn"><span class="gp-badge" style="background:#fff;color:#01875f;">▶</span> Play 商店</span>
+      </div>
+    </a>
+
+    <!-- 8: MONEY & CMoney -->
+    <a class="card" data-cat="finance"
+       href="https://play.google.com/store/apps/developer?id=MONEY+%26+CMoney+Inc.&hl=zh_TW"
+       target="_blank" rel="noopener">
+      <div class="card-header">
+        <div class="app-icon" style="background:#e6fbf5;">💳</div>
+        <div class="app-info">
+          <div class="app-name">MONEY 錢 · 記帳理財</div>
+          <div class="app-dev">MONEY & CMoney Inc.</div>
+          <span class="badge badge-finance">投資理財</span>
+        </div>
+      </div>
+      <p class="app-desc">CWMoney 記帳、SHIN 理想記帳等多款個人財務管理工具，輕鬆掌握每日支出與儲蓄目標。</p>
+      <div class="card-footer">
+        <div class="rating">★★★★☆ <span class="rating-count">4.1</span></div>
+        <span class="play-btn"><span class="gp-badge" style="background:#fff;color:#01875f;">▶</span> Play 商店</span>
+      </div>
+    </a>
+
+    <!-- 9 -->
+    <a class="card" data-cat="stock"
+       href="https://play.google.com/store/apps/developer?id=CMoney+Inc&hl=zh_TW"
+       target="_blank" rel="noopener">
+      <div class="card-header">
+        <div class="app-icon" style="background:#e8f0fe;">🔍</div>
+        <div class="app-info">
+          <div class="app-name">更多 CMoney APP</div>
+          <div class="app-dev">CMoney Inc.</div>
+          <span class="badge badge-stock">全部查看</span>
+        </div>
+      </div>
+      <p class="app-desc">前往 CMoney 開發者頁面，查看所有已上架 Google Play 的最新應用程式，持續新增更多工具中。</p>
+      <div class="card-footer">
+        <div class="rating" style="color:var(--sub);">CMoney Inc. 開發者</div>
+        <span class="play-btn"><span class="gp-badge" style="background:#fff;color:#01875f;">▶</span> 全部 APP</span>
+      </div>
+    </a>
+
+  </div>
+</main>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer>
+  <p>資料來源：Google Play Store &nbsp;·&nbsp; 點擊任一 APP 卡片即跳轉至 Play 商店頁面</p>
+  <div class="footer-links">
+    <a href="https://play.google.com/store/apps/developer?id=CMoney+Inc&hl=zh_TW"
+       target="_blank" rel="noopener">
+      <span class="gp-badge">▶</span> CMoney Inc.
+    </a>
+    <a href="https://play.google.com/store/apps/developer?id=MONEY+%26+CMoney+Inc.&hl=zh_TW"
+       target="_blank" rel="noopener">
+      <span class="gp-badge">▶</span> MONEY & CMoney
+    </a>
+    <a href="https://www.cmoney.tw" target="_blank" rel="noopener">🌐 官方網站</a>
+  </div>
+</footer>
+
+<!-- ═══════════════════ QUIZ OVERLAY ═══════════════════ -->
+<div id="quiz-overlay" class="quiz-hidden">
+  <div class="qz-header">
+    <button class="qz-back-btn" id="qzBackBtn" disabled>‹ 上一題</button>
+    <div class="qz-progress-wrap">
+      <div class="qz-progress-fill" id="qzProgressFill"></div>
+    </div>
+    <span class="qz-step-label" id="qzStepLabel"></span>
+    <button class="qz-close-btn" id="qzCloseBtn">✕</button>
+  </div>
+  <div class="qz-body" id="qzBody"></div>
+</div>
+
+<script>
+  // ── Filter buttons ──
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.card');
+  const countEl = document.getElementById('count');
+
+  // ── Welcome overlay ──
+  function dismissWelcome() {
+    const overlay = document.getElementById('welcome-overlay');
+    overlay.classList.add('fade-out');
+    setTimeout(() => { overlay.style.display = 'none'; }, 650);
+  }
+  document.getElementById('enterBtn').addEventListener('click', dismissWelcome);
+  document.getElementById('welcome-overlay').addEventListener('click', function(e) {
+    if (e.target === this) dismissWelcome();
+  });
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cat = btn.dataset.cat;
+      let visible = 0;
+      cards.forEach(card => {
+        const match = cat === 'all' || card.dataset.cat === cat;
+        card.classList.toggle('hidden', !match);
+        if (match) visible++;
+      });
+      countEl.textContent = `${visible} 個 APP`;
+    });
+  });
+
+  // ════════════════════════════════════════
+  // QUIZ ENGINE
+  // ════════════════════════════════════════
+  const QZ_DEPTH = { Q1:1, Q2:2, Q3:3, Q4:4, Q5:3, Q6:2, Q7:3, Q8:2, Q9:2, Q10:3 };
+  const QZ_MAX = 4;
+
+  const QZ_DATA = {
+    questions: {
+      Q1: {
+        text: '你今天想用 CMoney 解決什麼問題？',
+        opts: [
+          { emoji:'📈', label:'股市投資', sub:'想賺錢、想分析股票',     next:'Q2' },
+          { emoji:'💰', label:'個人財務', sub:'想記帳、管錢、存錢',     next:'Q6' },
+          { emoji:'💬', label:'社群互動', sub:'想和股友／朋友交流',     next:'Q8' },
+          { emoji:'📚', label:'知識學習', sub:'想學投資觀念或語言',     next:'Q9' }
+        ]
+      },
+      Q2: {
+        text: '你的投資主要目標是？',
+        opts: [
+          { emoji:'⚡', label:'短線／波段', sub:'幾天到幾週獲利了結',   next:'Q3' },
+          { emoji:'🌱', label:'長期存股',   sub:'抱 3～10 年、領配息', next:'Q5' },
+          { emoji:'🎮', label:'新手練習',   sub:'還沒信心下場，先體驗看看', result:'R_SIM' }
+        ]
+      },
+      Q3: {
+        text: '做短線時，你最重視哪種訊號？',
+        opts: [
+          { emoji:'🏦', label:'法人主力動向', sub:'籌碼、外資、主力買賣', next:'Q4' },
+          { emoji:'🚀', label:'起漲 K 線型態', sub:'股價突破、強勢飆股', result:'R_MOMENTUM' },
+          { emoji:'💬', label:'社群熱點',      sub:'大家在討論什麼就跟著走', result:'R_FORUM_TRADER' }
+        ]
+      },
+      Q4: {
+        text: '你對籌碼分析的需求程度？',
+        opts: [
+          { emoji:'🔬', label:'深度分析', sub:'籌碼集中度、連續買超天數', result:'R_CHIP_PRO' },
+          { emoji:'🧩', label:'綜合觀察', sub:'籌碼 + 社群 + 即時新聞一起看', result:'R_CHIP_SOCIAL' },
+          { emoji:'🤖', label:'自動警示', sub:'不想手動查，讓系統幫我通知', result:'R_ALERT' }
+        ]
+      },
+      Q5: {
+        text: '你選存股時最在意什麼？',
+        opts: [
+          { emoji:'📊', label:'財務報表', sub:'本益比、ROE、負債比',       result:'R_VALUE_FA' },
+          { emoji:'💵', label:'配息紀錄', sub:'連續配息年數、殖利率高低',  result:'R_VALUE_DIV' },
+          { emoji:'👥', label:'社群口碑', sub:'看別人推薦、討論區人氣股',  result:'R_FORUM_HOLDER' },
+          { emoji:'🏥', label:'持股健診', sub:'想知道我選的股票體質好不好', result:'R_HEALTH' }
+        ]
+      },
+      Q6: {
+        text: '你的理財需求最接近哪一種？',
+        opts: [
+          { emoji:'📝', label:'日常記帳',   sub:'追蹤每筆支出、看月報表',      next:'Q7' },
+          { emoji:'🎯', label:'儲蓄目標',   sub:'設定目標、管理儲蓄計畫',      result:'R_SAVE_GOAL' },
+          { emoji:'📈', label:'理財 + 投資', sub:'記帳的同時也想追蹤股票',     result:'R_FINANCE_INVEST' }
+        ]
+      },
+      Q7: {
+        text: '你偏好什麼樣的記帳體驗？',
+        opts: [
+          { emoji:'📊', label:'詳細派', sub:'要分類、要統計、要圓餅圖',   result:'R_BUDGET_DETAIL' },
+          { emoji:'✨', label:'極簡派', sub:'快速記一筆就好，介面乾淨',   result:'R_BUDGET_SIMPLE' },
+          { emoji:'🔍', label:'習慣分析', sub:'想深入了解自己的消費模式', result:'R_BUDGET_ANALYZE' }
+        ]
+      },
+      Q8: {
+        text: '你想在平台上交流的內容是？',
+        opts: [
+          { emoji:'📈', label:'股市討論', sub:'選股、明牌分享、即時行情',        result:'R_FORUM_GENERAL' },
+          { emoji:'🏠', label:'生活日常', sub:'和特定朋友／伴侶分享照片',        result:'R_LIFESTYLE' },
+          { emoji:'🌟', label:'兩者都要', sub:'投資 + 生活都想分享',             result:'R_FORUM_GENERAL' }
+        ]
+      },
+      Q9: {
+        text: '你想學習的方向是？',
+        opts: [
+          { emoji:'📈', label:'投資理財', sub:'學股票知識、看懂財報',   next:'Q10' },
+          { emoji:'🌍', label:'語言學習', sub:'學英文、準備 TOEIC',      result:'R_ENGLISH' },
+          { emoji:'🌟', label:'兩者都想要', sub:'全方位自我提升',        result:'R_BOTH_LEARN' }
+        ]
+      },
+      Q10: {
+        text: '你目前的投資知識程度大約是？',
+        opts: [
+          { emoji:'🌱', label:'完全新手', sub:'不懂 K 線，不知道怎麼下單',        result:'R_BEGINNER' },
+          { emoji:'📚', label:'初中階',   sub:'懂基本概念，想系統化、深化',       result:'R_INTERMEDIATE' },
+          { emoji:'🎯', label:'進階',     sub:'懂技術分析，想找更精準的工具',     result:'R_ADVANCED_LEARN' }
+        ]
+      }
+    },
+
+    results: {
+      R_SIM:           { name:'穩健的觀察者',      emoji:'🛡️', bg:'#d1fae5', desc:'你不是不想投資，你只是比任何人都更清楚「看懂比跟進更重要」。你願意先在場邊觀察、累積知識再出手，這種謹慎不是膽怯，而是真正的智慧。很多成功的投資人，都是從模擬交易開始的——你的謹慎，將是未來最強大的優勢。', apps:['A05','A04'] },
+      R_MOMENTUM:      { name:'動能獵手',          emoji:'🚀', bg:'#fee2e2', desc:'你有一種特別的敏銳度——能感受到市場的節奏，在別人還在猶豫時，你已經嗅到了機會。短線交易需要極強的判斷力與執行力，而你天生就具備這樣的特質。你追的不是熱點，你追的是「下一個還沒被發現的起漲點」。', apps:['A02','A04'] },
+      R_FORUM_TRADER:  { name:'社群情報員',        emoji:'📡', bg:'#ede9fe', desc:'你天生具有整合資訊的能力。你知道一個人的判斷力有限，但集體的智慧往往能揭示市場真相。你不是盲目跟風，你是在用社群當雷達，過濾出最有價值的訊號——這種「借力」策略，比獨自埋頭研究更有效率。', apps:['A04','A02'] },
+      R_CHIP_PRO:      { name:'籌碼解讀師',        emoji:'🔬', bg:'#dbeafe', desc:'你看市場的方式跟一般人不同——你不只看K線，你看「誰在買、誰在賣」。能讀懂籌碼的人，等於掌握了市場中最真實的「大戶心理地圖」。這種能力需要時間和耐心，而你顯然已經在這條路上走得很遠了。', apps:['A01','A12'] },
+      R_CHIP_SOCIAL:   { name:'多維分析師',        emoji:'🧩', bg:'#dbeafe', desc:'你不相信單一指標能解釋複雜的市場，所以你用多角度驗證每一個決策。籌碼、社群、新聞——你把這些整合在一起，形成自己獨特的決策框架。這種全面性的思維，是高手的共同標誌。', apps:['A01','A04'] },
+      R_ALERT:         { name:'智慧委託型投資人',  emoji:'🤖', bg:'#fef3c7', desc:'你了解一個重要道理：時間是最寶貴的資源。你不需要每天盯盤才能做好投資，你需要的是一個可靠的「信號系統」，在關鍵時刻提醒你行動。這種對效率的追求，說明你早已進入了更高維度的決策模式。', apps:['A02','A12'] },
+      R_VALUE_FA:      { name:'基本面價值家',      emoji:'📊', bg:'#d1fae5', desc:'你的投資決策從不依賴直覺或小道消息，你相信數字會說話。本益比、ROE、負債比——這些數據在別人眼裡是無聊的表格，在你眼裡卻是企業真實價值的密碼。你的耐心和理性，讓你天生適合做時間的朋友。', apps:['A03','A11'] },
+      R_VALUE_DIV:     { name:'現金流策略家',      emoji:'💵', bg:'#d1fae5', desc:'你追求的不是一夕暴富，而是源源不斷的現金流。你明白，真正的財務自由靠的是建立一個持續產生收益的資產組合。配息是你對企業「信任投票」的回報，而你有耐心等待這種回報的複利累積。', apps:['A03','A08'] },
+      R_FORUM_HOLDER:  { name:'社群存股族',        emoji:'👥', bg:'#ede9fe', desc:'你相信投資不是孤獨的事，你在社群中找到共識，也找到信心。你不只是在找「明牌」，你是在驗證自己的判斷——當看到有相同想法的人，你的決策更加踏實。這種對社群的信任，讓你的長期投資之路不孤單。', apps:['A04','A03'] },
+      R_HEALTH:        { name:'風險意識先行者',    emoji:'🏥', bg:'#d1fae5', desc:'你投資前一定先問「這個股票安全嗎？」——這不是膽小，這是成熟投資人的必要習慣。在高波動的市場中，懂得保護本金，才是長期勝出的關鍵。你對風險的重視，讓你比大多數投資人更有機會走得長遠。', apps:['A03','A10'] },
+      R_SAVE_GOAL:     { name:'目標導向儲蓄師',    emoji:'🎯', bg:'#d1fae5', desc:'你不只是在存錢，你是在為未來某個重要時刻鋪路。無論是出國旅遊、買房頭期款還是退休基金，你有清晰的財務目標，並願意為它付出紀律。這種「目標明確→行動一致」的特質，讓你在財務管理上遙遙領先同齡人。', apps:['A09','A08'] },
+      R_FINANCE_INVEST:{ name:'全方位理財工程師',  emoji:'⚙️', bg:'#dbeafe', desc:'你把個人財務當作一個需要精密管理的系統。你不只關心現在的支出，也在規劃未來的資產增值。記帳和投資在你眼中不是兩件事，而是同一個財富規劃的兩個面向。這種全局視角，是很多人努力一輩子都學不到的財富智慧。', apps:['A08','A03'] },
+      R_BUDGET_DETAIL: { name:'數字控理財人',      emoji:'📈', bg:'#dbeafe', desc:'你對數字有一種特別的親近感。每一筆支出對你來說都有意義，你不只是在記帳，你是在建立屬於自己的財務數據庫。這種對細節的掌控力，讓你能比任何人都更清楚地看到財務狀況的全貌，做出更精準的決策。', apps:['A08'] },
+      R_BUDGET_SIMPLE: { name:'極簡主義理財者',    emoji:'✨', bg:'#ede9fe', desc:'你深知「複雜是效率的敵人」。你不需要華麗的功能，你需要的是一個讓記帳變成習慣的工具——快、準、美。你對生活質感有獨特的品味，你知道真正好的設計讓你感覺不到它的存在，只是靜靜地讓生活變得更好。', apps:['A09'] },
+      R_BUDGET_ANALYZE:{ name:'消費行為洞察者',    emoji:'🔍', bg:'#ede9fe', desc:'你不只想記帳，你想了解自己——那些看似隨機的消費背後，藏著你的生活模式和心理習慣。你有勇氣面對自己的消費行為，願意用數據驗證直覺，這種自我覺察能力不只能改善財務，更能讓你在生活各個面向做出更好的選擇。', apps:['A08','A09'] },
+      R_FORUM_GENERAL: { name:'社群股市達人',      emoji:'📡', bg:'#ede9fe', desc:'你的超能力是「資訊整合」——你知道股市裡最快速的情報，往往不在財報裡，而是在討論區的熱烈討論中。你有敏銳的市場嗅覺，善於從眾多聲音中篩選出有價值的線索，讓你比別人早一步掌握市場脈動。', apps:['A04'] },
+      R_LIFESTYLE:     { name:'生活連結者',        emoji:'🌸', bg:'#fce7f3', desc:'在這個人人都在談投資的年代，你更重視的是與重要的人保持真實的連結。你知道人生最美好的「投資」，不一定是股票，而是那些被你珍視的關係與記憶。這種對「人」的重視，讓你在繁忙的生活中，仍然保持著溫度與感情。', apps:['A06'] },
+      R_ENGLISH:       { name:'國際視野學習者',    emoji:'🌍', bg:'#fef3c7', desc:'你明白語言不只是溝通工具，它是打開世界的鑰匙。在全球化的時代，英語能力讓你直接接觸國際一流的知識、機會和人脈。你願意投入時間學習語言，說明你有長遠的眼光——你在為未來那個更寬廣的自己，打好基礎。', apps:['A07'] },
+      R_BOTH_LEARN:    { name:'全能進化者',        emoji:'🌟', bg:'#fef3c7', desc:'你對學習有一種近乎本能的熱情。你不滿足於只精通一件事，你要同時提升語言力和財務力——因為你知道這兩者結合在一起，會在職場和人生中創造複利效應。這種「全方位進化」的思維，讓你天生就比別人走得更遠。', apps:['A07','A05','A04'] },
+      R_BEGINNER:      { name:'潛力新星',          emoji:'⭐', bg:'#fef3c7', desc:'每一位投資大師，都曾經是一個對K線一無所知的新手。你今天願意誠實地承認自己是新手，這本身就是一種非凡的智慧——很多人因為害怕「看起來不懂」而錯過了真正學習的機會。你的謙遜，是你最快速成長的起點。', apps:['A05','A04','A03'] },
+      R_INTERMEDIATE:  { name:'系統化成長者',      emoji:'📚', bg:'#dbeafe', desc:'你已經走過了懵懵懂懂的新手期，現在你需要的不是更多零散的知識，而是一個完整的框架。你對自己的程度有清醒的認知，知道「懂一點」和「真正會用」之間還有一段距離，而你正在誠實地走這段路——這種務實，是進步最快的人共有的特質。', apps:['A03','A04','A01'] },
+      R_ADVANCED_LEARN:{ name:'技術分析精英',      emoji:'🎯', bg:'#dbeafe', desc:'你已經掌握了技術分析的基本語言，現在你要的是更精準、更高效的工具，讓你的分析能力再上一個台階。你不滿足於「差不多」，你追求的是「精準」——這種對卓越的追求，正是頂尖投資人與普通投資人之間最核心的差異。', apps:['A01','A02','A12'] }
+    },
+
+    appInfo: {
+      A01: { name:'股市籌碼 K 線', emoji:'📊', cat:'股市分析', bg:'#e8f0fe', pkg:'com.cmoney.chipk' },
+      A02: { name:'股市起漲 K 線', emoji:'🚀', cat:'股市分析', bg:'#fff0f0', pkg:'com.cmoney.supertrendk' },
+      A03: { name:'存股價值 K 線', emoji:'💰', cat:'投資理財', bg:'#e6fbf5', pkg:'com.cmoney.valuek' },
+      A04: { name:'股市爆料同學會',emoji:'💬', cat:'社群',     bg:'#fdf2fb', pkg:'com.cmoney.forum' },
+      A05: { name:'股市大富翁',    emoji:'🎮', cat:'模擬交易', bg:'#f0fdf4', pkg:'com.cmoney.virtualtrade' },
+      A06: { name:'咻拍',          emoji:'📸', cat:'社群',     bg:'#fff7ed', pkg:'com.cmoney.showpop' },
+      A07: { name:'和 Cindy 一起學英文', emoji:'📚', cat:'學習', bg:'#fff7ed', pkg:'com.cmoney.cindyenglish' },
+      A08: { name:'CWMoney 記帳理財', emoji:'💳', cat:'理財',  bg:'#e6fbf5', dev:'MONEY+%26+CMoney+Inc.' },
+      A09: { name:'SHIN 理想記帳', emoji:'✨', cat:'理財',      bg:'#f5f3ff', dev:'MONEY+%26+CMoney+Inc.' },
+      A10: { name:'台股健診',      emoji:'🏥', cat:'股市分析', bg:'#e8f0fe', dev:'CMoney+Inc' },
+      A11: { name:'理財寶',        emoji:'💎', cat:'投資理財', bg:'#e6fbf5', dev:'CMoney+Inc' },
+      A12: { name:'股市多空訊號',  emoji:'🤖', cat:'股市分析', bg:'#fdf2fb', dev:'CMoney+Inc' }
+    }
+  };
+
+  // ── State ──
+  let qzHistory = [];
+  let qzCurrentQ = 'Q1';
+
+  function qzOpen() {
+    qzHistory = [];
+    qzCurrentQ = 'Q1';
+    const ov = document.getElementById('quiz-overlay');
+    ov.classList.remove('quiz-hidden');
+    ov.classList.add('quiz-fade-in');
+    document.body.style.overflow = 'hidden';
+    qzRenderQuestion('Q1');
+  }
+
+  function qzClose() {
+    document.getElementById('quiz-overlay').classList.add('quiz-hidden');
+    document.body.style.overflow = '';
+  }
+
+  function qzProgress(qId) {
+    const depth = QZ_DEPTH[qId] || 1;
+    return Math.round((depth / QZ_MAX) * 100);
+  }
+
+  function qzRenderQuestion(qId) {
+    qzCurrentQ = qId;
+    const q = QZ_DATA.questions[qId];
+    const stepNum = (qzHistory.length + 1);
+    const pct = qzProgress(qId);
+
+    document.getElementById('qzProgressFill').style.width = pct + '%';
+    document.getElementById('qzStepLabel').textContent = '問題 ' + stepNum;
+    document.getElementById('qzBackBtn').disabled = qzHistory.length === 0;
+
+    const html = `
+      <div class="qz-q-wrap qz-animate">
+        <div class="qz-q-label">第 ${stepNum} 題</div>
+        <div class="qz-q-text">${q.text}</div>
+        <div class="qz-options">
+          ${q.opts.map((o, i) => `
+            <button class="qz-option" data-idx="${i}" onclick="qzSelect(this, ${i})">
+              <div class="qz-opt-icon">${o.emoji}</div>
+              <div class="qz-opt-body">
+                <div class="qz-opt-label">${o.label}</div>
+                <div class="qz-opt-sub">${o.sub}</div>
+              </div>
+              <div class="qz-opt-check"></div>
+            </button>
+          `).join('')}
+        </div>
+      </div>`;
+    document.getElementById('qzBody').innerHTML = html;
+    document.getElementById('qzBody').scrollTop = 0;
+  }
+
+  function qzSelect(btn, idx) {
+    const q = QZ_DATA.questions[qzCurrentQ];
+    const opt = q.opts[idx];
+
+    // visual feedback
+    document.querySelectorAll('.qz-option').forEach(b => b.classList.add('qz-disabled'));
+    btn.classList.add('qz-selected');
+    btn.querySelector('.qz-opt-check').textContent = '✓';
+
+    setTimeout(() => {
+      if (opt.result) {
+        qzRenderResult(opt.result);
+      } else if (opt.next) {
+        qzHistory.push(qzCurrentQ);
+        qzRenderQuestion(opt.next);
+      }
+    }, 520);
+  }
+
+  function qzBack() {
+    if (qzHistory.length === 0) return;
+    const prev = qzHistory.pop();
+    qzRenderQuestion(prev);
+  }
+
+  function qzRenderResult(rId) {
+    const r = QZ_DATA.results[rId];
+    document.getElementById('qzProgressFill').style.width = '100%';
+    document.getElementById('qzStepLabel').textContent = '完成！';
+    document.getElementById('qzBackBtn').disabled = true;
+
+    const appsHtml = r.apps.map(aId => {
+      const a = QZ_DATA.appInfo[aId];
+      const url = a.pkg
+        ? `https://play.google.com/store/apps/details?id=${a.pkg}&hl=zh_TW`
+        : `https://play.google.com/store/apps/developer?id=${a.dev}&hl=zh_TW`;
+      return `
+        <a class="qz-app-card" href="${url}" target="_blank" rel="noopener">
+          <div class="qz-app-icon" style="background:${a.bg}">${a.emoji}</div>
+          <div class="qz-app-info">
+            <div class="qz-app-name">${a.name}</div>
+            <div class="qz-app-cat">${a.cat}</div>
+          </div>
+          <span class="qz-app-badge">▶ Play 商店</span>
+        </a>`;
+    }).join('');
+
+    const hasDevOnly = r.apps.some(id => !QZ_DATA.appInfo[id].pkg);
+
+    const html = `
+      <div class="qz-result">
+        <div class="qz-result-top">
+          <div class="qz-result-icon" style="background:${r.bg}">${r.emoji}</div>
+          <div class="qz-result-sublabel">你的類型</div>
+          <div class="qz-result-name">${r.name}</div>
+          <div class="qz-community-badge">
+            👥 與 <span class="pct">8.7%</span> 的人擁有相同類型
+          </div>
+        </div>
+        <div class="qz-desc-card">${r.desc}</div>
+        <div class="qz-apps-title">🎯 為你推薦的 CMoney 工具</div>
+        <div class="qz-app-cards">${appsHtml}</div>
+        ${hasDevOnly ? '<p class="qz-more-note">部分工具請在 Play 商店頁面搜尋查看</p>' : ''}
+        <div class="qz-result-actions">
+          <button class="qz-btn-retry" onclick="qzOpen()">↺ 再測一次</button>
+          <button class="qz-btn-back" onclick="qzClose()">← 回到 APP 列表</button>
+        </div>
+      </div>`;
+    document.getElementById('qzBody').innerHTML = html;
+    document.getElementById('qzBody').scrollTop = 0;
+  }
+
+  // bind buttons
+  document.getElementById('quizCTABtn').addEventListener('click', qzOpen);
+  document.getElementById('qzBackBtn').addEventListener('click', qzBack);
+  document.getElementById('qzCloseBtn').addEventListener('click', qzClose);
+  // close on Escape
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') qzClose(); });
+
+  // ── Android: open Play Store app via market:// scheme ──
+  // Fallback to browser if app not installed
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  if (isAndroid) {
+    document.querySelectorAll('a[href*="play.google.com/store/apps/details"]').forEach(link => {
+      link.addEventListener('click', e => {
+        const url = new URL(link.href);
+        const pkgId = url.searchParams.get('id');
+        if (!pkgId) return;
+        e.preventDefault();
+        // Try market:// first; if it fails (app not installed), fall back to browser
+        const marketUrl = `market://details?id=${pkgId}`;
+        const timer = setTimeout(() => { window.location.href = link.href; }, 1200);
+        window.location.href = marketUrl;
+        window.addEventListener('blur', () => clearTimeout(timer), { once: true });
+      });
+    });
+  }
+</script>
+
+</body>
+</html>
