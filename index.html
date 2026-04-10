@@ -1530,5 +1530,25 @@
   }
 </script>
 
+<!-- QR Code Modal -->
+<div id="qr-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.55);display:none;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:24px;padding:32px 28px;max-width:320px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);position:relative;">
+    <button onclick="document.getElementById('qr-modal').style.display='none'" style="position:absolute;top:14px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:#888;">✕</button>
+    <div style="font-size:28px;margin-bottom:8px;">📱</div>
+    <div style="font-weight:800;font-size:18px;color:#1a1a2e;margin-bottom:4px;">掃描 QR Code</div>
+    <div style="font-size:13px;color:#5a6580;margin-bottom:20px;">用手機掃描即可開啟本站</div>
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://lai2570.github.io/CMoney_Apps/&color=0057e7&bgcolor=ffffff&margin=10" width="220" height="220" style="border-radius:12px;border:2px solid #e0e8f0;" alt="QR Code" />
+    <div style="margin-top:16px;font-size:11px;color:#9ca3af;word-break:break-all;">https://lai2570.github.io/CMoney_Apps/</div>
+    <a href="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https://lai2570.github.io/CMoney_Apps/&color=0057e7&bgcolor=ffffff&margin=10" download="CMoney_QRCode.png" style="display:inline-block;margin-top:14px;background:#0057e7;color:#fff;padding:10px 22px;border-radius:50px;font-size:13px;font-weight:700;text-decoration:none;">⬇ 下載 QR Code</a>
+  </div>
+</div>
+
+<!-- QR trigger button in footer -->
+<script>
+  // Inject QR button into footer
+  document.querySelector('footer').insertAdjacentHTML('beforeend',
+    '<button onclick="document.getElementById(\'qr-modal\').style.display=\'flex\'" style="background:linear-gradient(135deg,#0057e7,#1a8cff);color:#fff;border:none;padding:10px 20px;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;">📱 分享 QR Code</button>'
+  );
+</script>
 </body>
 </html>
